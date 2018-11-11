@@ -1,7 +1,7 @@
 # blt-webapp
 
 ## About the project
-uhhhhhhhhhhhhhhh
+add description later
 
 ## Requirements
 * Python 3.5 or higher
