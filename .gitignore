@@ -25,6 +25,11 @@ wheels/
 *.egg
 MANIFEST
 
+# Secret environment settings
+.env
+env
+
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -102,3 +107,32 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Static assests
+staticfiles
+static_cdn
+media_cdn
+media
+
+# Ignore sqlite
+db.sqlite3
+
+# Apple files
+.DS_Store
+
+pgdata
+
+bin
+
+#commenting out old requirement shit
+#django-allauth==0.30.0
+
+# virtual environments
+venv
+
+# Python files
+*.pyc
+__pycache__
+
+# Python Notebook dot files
+.ipynb*
