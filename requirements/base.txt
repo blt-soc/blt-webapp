@@ -19,6 +19,7 @@ django-crispy-forms
 pytz
 
 pillow
+request
 
 django-filter
 django-cors-headers

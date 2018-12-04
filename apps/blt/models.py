@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.dispatch import receiver
+from django.db.models import Avg
 from django.db.models.signals import post_save
 
 from datetime import datetime
@@ -20,7 +21,21 @@ class Address(models.Model):
     """
     aid = models.CharField(max_length=200, db_index=True, unique=True)
     value = models.IntegerField(default = 0, db_index = True)
-    rating = models.IntegerField(default = 1, db_index = True)
+
+    @property
+    def amountOfTransactions(self):
+        numTotalInteractions = 0
+        for s in self.sent:
+            numTotalInteractions += 1
+        for r in self.received:
+            numTotalInteractions +=1
+        return numTotalInteractions
+
+    @property
+    def rating(self):
+        avgTransaction = Address.objects.all().aggregate(Avg(amountOfTransactions))
+        
+        
 
     def save(self, **kwargs):
         if not self.pk:
