@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'import_export',
     'apps.blt'
 ]
 
@@ -110,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

@@ -1,13 +1,10 @@
 from django.contrib import admin
-
+from import_export.admin import ImportExportModelAdmin
 from .models import *
+from .resources import *
 
-class AddressAdmin(admin.ModelAdmin):
-    list_display = ['aid','value']
+@admin.register(Address)
 
-admin.site.register(Address, AddressAdmin)
-
-class TransactionAdmin(admin.ModelAdmin):
-    list_display = ['tid', 'value']
-
-admin.site.register(Transaction, TransactionAdmin)
+@admin.register(Transaction)
+class TransactionAdmin(ImportExportModelAdmin):
+    resource_class = TransactionResource

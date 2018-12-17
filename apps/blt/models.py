@@ -20,7 +20,8 @@ class Address(models.Model):
         rating: SECRET WEAPON
     """
     aid = models.CharField(max_length=200, db_index=True, unique=True)
-    value = models.IntegerField(default = 0, db_index = True)
+    value = models.BigIntegerField(default = 0, db_index = True)
+    rating = models.BigIntegerField(default = 0, db_index = True)
 
     @property
     def amountOfTransactions(self):
@@ -31,11 +32,7 @@ class Address(models.Model):
             numTotalInteractions +=1
         return numTotalInteractions
 
-    @property
-    def rating(self):
-        avgTransaction = Address.objects.all().aggregate(Avg(amountOfTransactions))
-        
-        
+
 
     def save(self, **kwargs):
         if not self.pk:
@@ -52,9 +49,10 @@ class Transaction(models.Model):
         transaction_date: Datetime object that holds when the transaction occured
         value: An integer that holds the amount of bitcoin that was transfered
     """
-    tid = models.CharField(max_length=200, db_index=True, unique=True)
-    value = models.IntegerField(default = 0, db_index = True)
-    transaction_date = models.DateTimeField(auto_now = True)
+    tid = models.CharField(max_length=200, db_index=True)
+    value = models.BigIntegerField(default = 0, db_index = True)
+    no = models.IntegerField(default = 0, db_index = True)
+    transaction_date = models.CharField(max_length=200, db_index=True)
 
     @property
     def receivers(self):
@@ -69,12 +67,15 @@ class Transaction(models.Model):
             response = requests.get('https://blockchain.info/rawtx/' + self.tid)
             transaction_data = response.json()
             for user in transaction_data['inputs']:
-                curr = user['prev_out']['value']
-                self.value = self.value + curr
-                newAddress, created = Address.objects.get_or_create(aid = user['prev_out']['addr'])
-                newAddress.save()
-                newUserSend = UserSendTran(tid = self.tid, value = curr, user = newAddress)
-                newUserSend.save()
+                try:
+                    curr = user['prev_out']['value']
+                    self.value = self.value + curr
+                    newAddress, created = Address.objects.get_or_create(aid = user['prev_out']['addr'])
+                    newAddress.save()
+                    newUserSend = UserSendTran(tid = self.tid, value = curr, user = newAddress)
+                    newUserSend.save()
+                except:
+                    continue
             for user in transaction_data['out']:
                 curr = user['value']
                 newAddress, created = Address.objects.get_or_create(aid = user['addr'])
@@ -87,10 +88,10 @@ class Transaction(models.Model):
 
 class UserSendTran(models.Model):
     tid = models.CharField(max_length=200, db_index=True)
-    value = models.IntegerField(default = 0, db_index = True)
+    value = models.BigIntegerField(default = 0, db_index = True)
     user = models.ForeignKey(Address, related_name='sent',on_delete=models.CASCADE)
 
 class UserReceiveTran(models.Model):
     tid = models.CharField(max_length=200, db_index=True)
-    value = models.IntegerField(default = 0, db_index = True)
+    value = models.BigIntegerField(default = 0, db_index = True)
     user = models.ForeignKey(Address, related_name='received', on_delete=models.CASCADE)
